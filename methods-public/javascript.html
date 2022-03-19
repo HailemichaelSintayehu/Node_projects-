@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch Data</title>
+</head>
+<body>
+    <section>
+            <form>
+                <input 
+                    type="text"
+                    name="name"
+                    id="name"
+                    class="form_input"
+                    autocomplete="false"
+                />
+                <button type="submit" class="submit">submit</button>
+                <div class="result"></div>
+            </form>
+        
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+   <script>
+       const result = document.querySelector('.result');
+
+       const fetchPeople = async() => {
+           try{
+               const {data} = await axios.get('/api/people')
+
+               const people = data.data.map((person) =>{
+                   return  `<h5>${person.name}</h5>`
+               })
+               result.innerHTML = people.join("")
+           }
+           catch(error){
+               result.innerHTML = `<h5>can't fetch data</h5>`
+           }
+       }
+       fetchPeople();
+
+       const btn = document.querySelector('.submit');
+       const input = document.querySelector('.form_input');
+       const formAlert = document.querySelector('.result');
+
+
+       btn.addEventListener('click',async(e)=>{
+           e.preventDefault()
+           const nameValue = input.value;
+
+           try{
+               const {data} = await axios.post('/api/people',{name:nameValue})
+               const h5 = document.createElement('h5');
+               h5.textContent = data.person;
+               result.appendChild(h5);
+           }
+           catch(error){
+               formAlert.textContent = error.response.data.msg
+           }
+           input.value = ""
+       })
+
+   </script>
+
+
+    
+</body>
+</html>
